@@ -10,10 +10,12 @@ interface AppContextType {
   txLoading: boolean;
   txHash: string;
   txName: string;
+  error: string;
   transactions: { txHash: string; action: string; data: any }[];
   setTxLoading: (loading: boolean) => void;
   setTxHash: (txHash: string) => void;
   setTxName: (txName: string) => void;
+  setError: (txName: string) => void;
   mintNFT: (to: Address, uri: string) => Promise<string>;
   addTransaction: (txHash: string, action: string, data: any) => void;
 }
@@ -31,6 +33,7 @@ export const useStory = () => {
 export default function AppProvider({ children }: PropsWithChildren) {
   const [txLoading, setTxLoading] = useState<boolean>(false);
   const [txName, setTxName] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [txHash, setTxHash] = useState<string>("");
   const [transactions, setTransactions] = useState<
     { txHash: string; action: string; data: any }[]
@@ -76,10 +79,12 @@ export default function AppProvider({ children }: PropsWithChildren) {
         txLoading,
         txHash,
         txName,
+        error,
         transactions,
         setTxLoading,
         setTxName,
         setTxHash,
+        setError,
         mintNFT,
         addTransaction,
       }}

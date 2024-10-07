@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { useWalletClient } from "wagmi";
 
 export default function Home() {
-  const { txLoading, txHash, txName } = useStory();
+  const { txLoading, txHash, txName, error, setError } = useStory();
   const { data: wallet } = useWalletClient();
 
   useEffect(() => {
@@ -35,6 +35,22 @@ export default function Home() {
   }, [wallet]);
   return (
     <main className="flex min-h-screen flex-col">
+      {
+        !txLoading && error && (
+          <div className="fixed bottom-5 left-5 md:max-w-[600px] max-w-[300px] z-10 overflow-auto">
+            <Alert>
+              <Icon
+                style={{ color: "#ff2825", marginTop: "-5px" }}
+                className="h-4 w-4"
+                icon="tabler:alert-circle"
+                onClick={() => setError("")}
+              />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          </div>
+        )
+      }
       {txLoading ? (
         <div className="fixed bottom-5 left-5 md:max-w-[600px] max-w-[300px] z-10">
           <Alert>

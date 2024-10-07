@@ -20,7 +20,7 @@ import { useIpAsset } from "@story-protocol/react-sdk";
 import CryptoJS from "crypto-js";
 
 export default function RegisterIPA() {
-  const { mintNFT, setTxHash, setTxLoading, setTxName, addTransaction } =
+  const { mintNFT, setTxHash, setTxLoading, setTxName, setError, addTransaction } =
     useStory();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -41,13 +41,20 @@ export default function RegisterIPA() {
     formData.append("file", image);
     const { ipfsUri, ipfsJson } = await uploadJSONToIPFS(formData);
 
-    const tokenId = await mintNFT(wallet?.account.address as Address, ipfsUri);
-    registerExistingNFT(
-      tokenId,
-      "0xd2a4a4Cb40357773b658BECc66A6c165FD9Fc485",
-      ipfsUri,
-      ipfsJson
-    );
+    try {
+      const tokenId = await mintNFT(wallet?.account.address as Address, ipfsUri);
+      registerExistingNFT(
+        tokenId,
+        "0xd2a4a4Cb40357773b658BECc66A6c165FD9Fc485",
+        ipfsUri,
+        ipfsJson
+      );
+    } catch (error) {
+      setTxLoading(false);
+      // @ts-expect-error ignore
+      setError("Error minting NFT or registering as IP Asset - " + error?.message);
+      console.error(error);
+    }
   };
 
   const registerExistingNFT = async (
